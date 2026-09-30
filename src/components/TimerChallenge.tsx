@@ -1,11 +1,15 @@
 import { useState, useRef } from 'react';
 
-import ResultModal from './ResultModal.jsx';
+import ResultModal, { type ResultModalHandle } from './ResultModal';
 
+type TimerChallengeProps = {
+  title: string;
+  targetTime: number;
+};
 
-export default function TimerChallenge({ title, targetTime }) {
-  const timer = useRef();
-  const dialog = useRef();
+export default function TimerChallenge({ title, targetTime }: TimerChallengeProps) {
+  const timer = useRef<ReturnType<typeof setInterval> | undefined>(undefined);
+  const dialog = useRef<ResultModalHandle>(null);
 
   const [timeRemaining, setTimeRemaining] = useState(targetTime * 1000);
 
@@ -13,7 +17,7 @@ export default function TimerChallenge({ title, targetTime }) {
 
   if (timeRemaining <= 0) {
     clearInterval(timer.current);
-    dialog.current.open();
+    dialog.current?.open();
   }
 
   function handleReset() {
@@ -27,7 +31,7 @@ export default function TimerChallenge({ title, targetTime }) {
   }
 
   function handleStop() {
-    dialog.current.open();
+    dialog.current?.open();
     clearInterval(timer.current);
   }
 
